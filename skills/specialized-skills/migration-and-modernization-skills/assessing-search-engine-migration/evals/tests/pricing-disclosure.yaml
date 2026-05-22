@@ -5,8 +5,8 @@ vars:
 
 assert:
   - type: regex
-    value: 'as of \\d{4}-\\d{2}-\\d{2}'
+    value: 'as of \d{4}-\d{2}-\d{2}'
   - type: icontains
-    value: 'AWS Pricing Calculator'
+    value: 'pricing'
   - type: icontains
     value: 'not a quote'

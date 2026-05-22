@@ -1,71 +1,218 @@
 {
-  "as_of": "2025-01-15",
+  "as_of": "2026-05-22",
   "currency": "USD",
+  "notes": [
+    "Multi-region list-price snapshot, derived from public AWS pricing pages.",
+    "ALWAYS validate with the live AWS Pricing Calculator (https://calculator.aws) and, when available, the AWS MCP Server `pricing.get_products` API.",
+    "GovCloud uplift averages 20-28% over us-east-1 (per family — see real-world-tco.md). Prices below already include the regional uplift; do not double-count.",
+    "OR1 family: not yet GA in us-gov-west-1 or ap-south-1.",
+    "Reserved Instance discounts (graviton): 1-yr ~31% / 3-yr ~48% (No-Upfront). Apply post-hoc in the estimator."
+  ],
   "service": {
     "us-east-1": {
+      "t3.small.search":          {"usd_per_hour": 0.036, "vcpu": 2,  "memory_gib": 2},
       "m6g.large.search":         {"usd_per_hour": 0.167, "vcpu": 2,  "memory_gib": 8},
       "m6g.xlarge.search":        {"usd_per_hour": 0.334, "vcpu": 4,  "memory_gib": 16},
       "m6g.2xlarge.search":       {"usd_per_hour": 0.668, "vcpu": 8,  "memory_gib": 32},
       "m6g.4xlarge.search":       {"usd_per_hour": 1.336, "vcpu": 16, "memory_gib": 64},
+      "m7g.large.search":         {"usd_per_hour": 0.187, "vcpu": 2,  "memory_gib": 8},
+      "m7g.xlarge.search":        {"usd_per_hour": 0.374, "vcpu": 4,  "memory_gib": 16},
+      "m7g.2xlarge.search":       {"usd_per_hour": 0.748, "vcpu": 8,  "memory_gib": 32},
+      "m7g.4xlarge.search":       {"usd_per_hour": 1.496, "vcpu": 16, "memory_gib": 64},
       "r6g.large.search":         {"usd_per_hour": 0.211, "vcpu": 2,  "memory_gib": 16},
       "r6g.xlarge.search":        {"usd_per_hour": 0.422, "vcpu": 4,  "memory_gib": 32},
       "r6g.2xlarge.search":       {"usd_per_hour": 0.844, "vcpu": 8,  "memory_gib": 64},
       "r6g.4xlarge.search":       {"usd_per_hour": 1.688, "vcpu": 16, "memory_gib": 128},
+      "r7g.large.search":         {"usd_per_hour": 0.236, "vcpu": 2,  "memory_gib": 16},
+      "r7g.xlarge.search":        {"usd_per_hour": 0.472, "vcpu": 4,  "memory_gib": 32},
+      "r7g.2xlarge.search":       {"usd_per_hour": 0.944, "vcpu": 8,  "memory_gib": 64},
+      "r7g.4xlarge.search":       {"usd_per_hour": 1.888, "vcpu": 16, "memory_gib": 128},
       "c6g.large.search":         {"usd_per_hour": 0.139, "vcpu": 2,  "memory_gib": 4},
       "c6g.xlarge.search":        {"usd_per_hour": 0.278, "vcpu": 4,  "memory_gib": 8},
-      "t3.small.search":          {"usd_per_hour": 0.036, "vcpu": 2,  "memory_gib": 2},
+      "or1.medium.search":        {"usd_per_hour": 0.193, "vcpu": 1,  "memory_gib": 8},
+      "or1.large.search":         {"usd_per_hour": 0.281, "vcpu": 2,  "memory_gib": 16},
+      "or1.xlarge.search":        {"usd_per_hour": 0.562, "vcpu": 4,  "memory_gib": 32},
+      "or1.2xlarge.search":       {"usd_per_hour": 1.124, "vcpu": 8,  "memory_gib": 64},
+      "or1.4xlarge.search":       {"usd_per_hour": 2.248, "vcpu": 16, "memory_gib": 128},
+      "or1.8xlarge.search":       {"usd_per_hour": 4.496, "vcpu": 32, "memory_gib": 256},
       "ultrawarm1.medium.search": {"usd_per_hour": 0.238, "vcpu": 2,  "memory_gib": 16},
+      "ultrawarm1.large.search":  {"usd_per_hour": 1.910, "vcpu": 8,  "memory_gib": 64},
       "ebs_gp3_per_gb_month":           0.122,
       "ebs_gp3_per_iops_month":         0.008,
-      "ebs_gp3_per_throughput_mbps_month": 0.097
+      "ebs_gp3_per_throughput_mbps_month": 0.097,
+      "ultrawarm_managed_storage_per_gb_month": 0.024,
+      "cold_managed_storage_per_gb_month":      0.0125
     },
     "us-west-2": {
-      "m6g.large.search":   {"usd_per_hour": 0.167, "vcpu": 2,  "memory_gib": 8},
-      "m6g.xlarge.search":  {"usd_per_hour": 0.334, "vcpu": 4,  "memory_gib": 16},
-      "m6g.2xlarge.search": {"usd_per_hour": 0.668, "vcpu": 8,  "memory_gib": 32},
-      "m6g.4xlarge.search": {"usd_per_hour": 1.336, "vcpu": 16, "memory_gib": 64},
-      "r6g.xlarge.search":  {"usd_per_hour": 0.422, "vcpu": 4,  "memory_gib": 32},
-      "t3.small.search":    {"usd_per_hour": 0.036, "vcpu": 2,  "memory_gib": 2},
-      "ebs_gp3_per_gb_month":   0.122,
-      "ebs_gp3_per_iops_month": 0.008
+      "t3.small.search":          {"usd_per_hour": 0.036, "vcpu": 2,  "memory_gib": 2},
+      "m6g.large.search":         {"usd_per_hour": 0.167, "vcpu": 2,  "memory_gib": 8},
+      "m6g.xlarge.search":        {"usd_per_hour": 0.334, "vcpu": 4,  "memory_gib": 16},
+      "m6g.2xlarge.search":       {"usd_per_hour": 0.668, "vcpu": 8,  "memory_gib": 32},
+      "m6g.4xlarge.search":       {"usd_per_hour": 1.336, "vcpu": 16, "memory_gib": 64},
+      "m7g.large.search":         {"usd_per_hour": 0.187, "vcpu": 2,  "memory_gib": 8},
+      "m7g.xlarge.search":        {"usd_per_hour": 0.374, "vcpu": 4,  "memory_gib": 16},
+      "m7g.2xlarge.search":       {"usd_per_hour": 0.748, "vcpu": 8,  "memory_gib": 32},
+      "r6g.large.search":         {"usd_per_hour": 0.211, "vcpu": 2,  "memory_gib": 16},
+      "r6g.xlarge.search":        {"usd_per_hour": 0.422, "vcpu": 4,  "memory_gib": 32},
+      "r6g.2xlarge.search":       {"usd_per_hour": 0.844, "vcpu": 8,  "memory_gib": 64},
+      "r6g.4xlarge.search":       {"usd_per_hour": 1.688, "vcpu": 16, "memory_gib": 128},
+      "r7g.large.search":         {"usd_per_hour": 0.236, "vcpu": 2,  "memory_gib": 16},
+      "r7g.xlarge.search":        {"usd_per_hour": 0.472, "vcpu": 4,  "memory_gib": 32},
+      "r7g.2xlarge.search":       {"usd_per_hour": 0.944, "vcpu": 8,  "memory_gib": 64},
+      "or1.large.search":         {"usd_per_hour": 0.281, "vcpu": 2,  "memory_gib": 16},
+      "or1.xlarge.search":        {"usd_per_hour": 0.562, "vcpu": 4,  "memory_gib": 32},
+      "or1.2xlarge.search":       {"usd_per_hour": 1.124, "vcpu": 8,  "memory_gib": 64},
+      "or1.4xlarge.search":       {"usd_per_hour": 2.248, "vcpu": 16, "memory_gib": 128},
+      "ultrawarm1.medium.search": {"usd_per_hour": 0.238, "vcpu": 2,  "memory_gib": 16},
+      "ultrawarm1.large.search":  {"usd_per_hour": 1.910, "vcpu": 8,  "memory_gib": 64},
+      "ebs_gp3_per_gb_month":           0.122,
+      "ebs_gp3_per_iops_month":         0.008,
+      "ebs_gp3_per_throughput_mbps_month": 0.097,
+      "ultrawarm_managed_storage_per_gb_month": 0.024,
+      "cold_managed_storage_per_gb_month":      0.0125
+    },
+    "eu-west-1": {
+      "t3.small.search":          {"usd_per_hour": 0.040, "vcpu": 2,  "memory_gib": 2},
+      "m6g.large.search":         {"usd_per_hour": 0.181, "vcpu": 2,  "memory_gib": 8},
+      "m6g.xlarge.search":        {"usd_per_hour": 0.362, "vcpu": 4,  "memory_gib": 16},
+      "m6g.2xlarge.search":       {"usd_per_hour": 0.724, "vcpu": 8,  "memory_gib": 32},
+      "m6g.4xlarge.search":       {"usd_per_hour": 1.448, "vcpu": 16, "memory_gib": 64},
+      "m7g.xlarge.search":        {"usd_per_hour": 0.405, "vcpu": 4,  "memory_gib": 16},
+      "m7g.2xlarge.search":       {"usd_per_hour": 0.810, "vcpu": 8,  "memory_gib": 32},
+      "r6g.large.search":         {"usd_per_hour": 0.229, "vcpu": 2,  "memory_gib": 16},
+      "r6g.xlarge.search":        {"usd_per_hour": 0.458, "vcpu": 4,  "memory_gib": 32},
+      "r6g.2xlarge.search":       {"usd_per_hour": 0.916, "vcpu": 8,  "memory_gib": 64},
+      "r6g.4xlarge.search":       {"usd_per_hour": 1.832, "vcpu": 16, "memory_gib": 128},
+      "r7g.xlarge.search":        {"usd_per_hour": 0.512, "vcpu": 4,  "memory_gib": 32},
+      "r7g.2xlarge.search":       {"usd_per_hour": 1.024, "vcpu": 8,  "memory_gib": 64},
+      "or1.large.search":         {"usd_per_hour": 0.305, "vcpu": 2,  "memory_gib": 16},
+      "or1.xlarge.search":        {"usd_per_hour": 0.610, "vcpu": 4,  "memory_gib": 32},
+      "or1.2xlarge.search":       {"usd_per_hour": 1.220, "vcpu": 8,  "memory_gib": 64},
+      "ultrawarm1.medium.search": {"usd_per_hour": 0.258, "vcpu": 2,  "memory_gib": 16},
+      "ultrawarm1.large.search":  {"usd_per_hour": 2.072, "vcpu": 8,  "memory_gib": 64},
+      "ebs_gp3_per_gb_month":           0.131,
+      "ebs_gp3_per_iops_month":         0.0086,
+      "ebs_gp3_per_throughput_mbps_month": 0.104,
+      "ultrawarm_managed_storage_per_gb_month": 0.026,
+      "cold_managed_storage_per_gb_month":      0.0135
+    },
+    "ap-southeast-1": {
+      "t3.small.search":          {"usd_per_hour": 0.046, "vcpu": 2,  "memory_gib": 2},
+      "m6g.large.search":         {"usd_per_hour": 0.205, "vcpu": 2,  "memory_gib": 8},
+      "m6g.xlarge.search":        {"usd_per_hour": 0.410, "vcpu": 4,  "memory_gib": 16},
+      "m6g.2xlarge.search":       {"usd_per_hour": 0.820, "vcpu": 8,  "memory_gib": 32},
+      "m6g.4xlarge.search":       {"usd_per_hour": 1.640, "vcpu": 16, "memory_gib": 64},
+      "r6g.large.search":         {"usd_per_hour": 0.260, "vcpu": 2,  "memory_gib": 16},
+      "r6g.xlarge.search":        {"usd_per_hour": 0.520, "vcpu": 4,  "memory_gib": 32},
+      "r6g.2xlarge.search":       {"usd_per_hour": 1.040, "vcpu": 8,  "memory_gib": 64},
+      "r6g.4xlarge.search":       {"usd_per_hour": 2.080, "vcpu": 16, "memory_gib": 128},
+      "or1.large.search":         {"usd_per_hour": 0.346, "vcpu": 2,  "memory_gib": 16},
+      "or1.xlarge.search":        {"usd_per_hour": 0.692, "vcpu": 4,  "memory_gib": 32},
+      "or1.2xlarge.search":       {"usd_per_hour": 1.384, "vcpu": 8,  "memory_gib": 64},
+      "ultrawarm1.medium.search": {"usd_per_hour": 0.292, "vcpu": 2,  "memory_gib": 16},
+      "ultrawarm1.large.search":  {"usd_per_hour": 2.348, "vcpu": 8,  "memory_gib": 64},
+      "ebs_gp3_per_gb_month":           0.149,
+      "ebs_gp3_per_iops_month":         0.0098,
+      "ebs_gp3_per_throughput_mbps_month": 0.118,
+      "ultrawarm_managed_storage_per_gb_month": 0.029,
+      "cold_managed_storage_per_gb_month":      0.0153
+    },
+    "ap-south-1": {
+      "t3.small.search":          {"usd_per_hour": 0.040, "vcpu": 2,  "memory_gib": 2},
+      "m6g.large.search":         {"usd_per_hour": 0.175, "vcpu": 2,  "memory_gib": 8},
+      "m6g.xlarge.search":        {"usd_per_hour": 0.350, "vcpu": 4,  "memory_gib": 16},
+      "m6g.2xlarge.search":       {"usd_per_hour": 0.700, "vcpu": 8,  "memory_gib": 32},
+      "m6g.4xlarge.search":       {"usd_per_hour": 1.400, "vcpu": 16, "memory_gib": 64},
+      "r6g.large.search":         {"usd_per_hour": 0.222, "vcpu": 2,  "memory_gib": 16},
+      "r6g.xlarge.search":        {"usd_per_hour": 0.444, "vcpu": 4,  "memory_gib": 32},
+      "r6g.2xlarge.search":       {"usd_per_hour": 0.888, "vcpu": 8,  "memory_gib": 64},
+      "r6g.4xlarge.search":       {"usd_per_hour": 1.776, "vcpu": 16, "memory_gib": 128},
+      "ultrawarm1.medium.search": {"usd_per_hour": 0.250, "vcpu": 2,  "memory_gib": 16},
+      "ultrawarm1.large.search":  {"usd_per_hour": 2.008, "vcpu": 8,  "memory_gib": 64},
+      "ebs_gp3_per_gb_month":           0.128,
+      "ebs_gp3_per_iops_month":         0.0084,
+      "ebs_gp3_per_throughput_mbps_month": 0.102,
+      "ultrawarm_managed_storage_per_gb_month": 0.025,
+      "cold_managed_storage_per_gb_month":      0.0131,
+      "_note": "OR1 not yet GA in ap-south-1"
+    },
+    "us-gov-west-1": {
+      "t3.small.search":          {"usd_per_hour": 0.043, "vcpu": 2,  "memory_gib": 2},
+      "m6g.large.search":         {"usd_per_hour": 0.210, "vcpu": 2,  "memory_gib": 8},
+      "m6g.xlarge.search":        {"usd_per_hour": 0.420, "vcpu": 4,  "memory_gib": 16},
+      "m6g.2xlarge.search":       {"usd_per_hour": 0.840, "vcpu": 8,  "memory_gib": 32},
+      "m6g.4xlarge.search":       {"usd_per_hour": 1.680, "vcpu": 16, "memory_gib": 64},
+      "m7g.xlarge.search":        {"usd_per_hour": 0.473, "vcpu": 4,  "memory_gib": 16},
+      "r6g.large.search":         {"usd_per_hour": 0.254, "vcpu": 2,  "memory_gib": 16},
+      "r6g.xlarge.search":        {"usd_per_hour": 0.508, "vcpu": 4,  "memory_gib": 32},
+      "r6g.2xlarge.search":       {"usd_per_hour": 1.016, "vcpu": 8,  "memory_gib": 64},
+      "r6g.4xlarge.search":       {"usd_per_hour": 2.032, "vcpu": 16, "memory_gib": 128},
+      "r7g.xlarge.search":        {"usd_per_hour": 0.565, "vcpu": 4,  "memory_gib": 32},
+      "ultrawarm1.medium.search": {"usd_per_hour": 0.286, "vcpu": 2,  "memory_gib": 16},
+      "ultrawarm1.large.search":  {"usd_per_hour": 2.296, "vcpu": 8,  "memory_gib": 64},
+      "ebs_gp3_per_gb_month":           0.146,
+      "ebs_gp3_per_iops_month":         0.0096,
+      "ebs_gp3_per_throughput_mbps_month": 0.117,
+      "ultrawarm_managed_storage_per_gb_month": 0.029,
+      "cold_managed_storage_per_gb_month":      0.0150,
+      "_note": "OR1 and OSI Ingestion OCU not yet GA in us-gov-west-1; AOSS available in us-gov-west-1 (BIL) since 2024."
     }
   },
   "serverless": {
-    "us-east-1": {
-      "ocu_per_hour":                 0.24,
-      "managed_storage_per_gb_month": 0.024
-    },
-    "us-west-2": {
-      "ocu_per_hour":                 0.24,
-      "managed_storage_per_gb_month": 0.024
-    }
+    "us-east-1":      {"ocu_per_hour": 0.24,  "managed_storage_per_gb_month": 0.024, "minimum_ocu_redundant": 4, "minimum_ocu_non_redundant": 2},
+    "us-west-2":      {"ocu_per_hour": 0.24,  "managed_storage_per_gb_month": 0.024, "minimum_ocu_redundant": 4, "minimum_ocu_non_redundant": 2},
+    "eu-west-1":      {"ocu_per_hour": 0.262, "managed_storage_per_gb_month": 0.026, "minimum_ocu_redundant": 4, "minimum_ocu_non_redundant": 2},
+    "ap-southeast-1": {"ocu_per_hour": 0.293, "managed_storage_per_gb_month": 0.029, "minimum_ocu_redundant": 4, "minimum_ocu_non_redundant": 2},
+    "ap-south-1":     {"ocu_per_hour": 0.252, "managed_storage_per_gb_month": 0.025, "minimum_ocu_redundant": 4, "minimum_ocu_non_redundant": 2},
+    "us-gov-west-1":  {"ocu_per_hour": 0.302, "managed_storage_per_gb_month": 0.029, "minimum_ocu_redundant": 4, "minimum_ocu_non_redundant": 2}
   },
   "data_transfer": {
-    "us-east-1": {
-      "cross_az_per_gb": 0.01,
-      "internet_egress_first_10tb_per_gb": 0.09
-    },
-    "us-west-2": {
-      "cross_az_per_gb": 0.01,
-      "internet_egress_first_10tb_per_gb": 0.09
-    }
+    "us-east-1":      {"cross_az_per_gb": 0.01,  "internet_egress_first_10tb_per_gb": 0.09},
+    "us-west-2":      {"cross_az_per_gb": 0.01,  "internet_egress_first_10tb_per_gb": 0.09},
+    "eu-west-1":      {"cross_az_per_gb": 0.01,  "internet_egress_first_10tb_per_gb": 0.09},
+    "ap-southeast-1": {"cross_az_per_gb": 0.01,  "internet_egress_first_10tb_per_gb": 0.12},
+    "ap-south-1":     {"cross_az_per_gb": 0.01,  "internet_egress_first_10tb_per_gb": 0.1093},
+    "us-gov-west-1":  {"cross_az_per_gb": 0.01,  "internet_egress_first_10tb_per_gb": 0.155}
   },
   "osi": {
-    "us-east-1": {"ocu_per_hour": 0.24},
-    "us-west-2": {"ocu_per_hour": 0.24}
+    "us-east-1":      {"ocu_per_hour": 0.24},
+    "us-west-2":      {"ocu_per_hour": 0.24},
+    "eu-west-1":      {"ocu_per_hour": 0.262},
+    "ap-southeast-1": {"ocu_per_hour": 0.293},
+    "ap-south-1":     {"ocu_per_hour": 0.252}
   },
   "emr": {
-    "us-east-1": {
-      "emr_serverless_vcpu_hour":    0.052624,
-      "emr_serverless_memory_gb_hour": 0.0057785
-    },
-    "us-west-2": {
-      "emr_serverless_vcpu_hour":    0.052624,
-      "emr_serverless_memory_gb_hour": 0.0057785
-    }
+    "us-east-1":      {"emr_serverless_vcpu_hour": 0.052624, "emr_serverless_memory_gb_hour": 0.0057785},
+    "us-west-2":      {"emr_serverless_vcpu_hour": 0.052624, "emr_serverless_memory_gb_hour": 0.0057785},
+    "eu-west-1":      {"emr_serverless_vcpu_hour": 0.057886, "emr_serverless_memory_gb_hour": 0.006356},
+    "ap-southeast-1": {"emr_serverless_vcpu_hour": 0.064564, "emr_serverless_memory_gb_hour": 0.007089},
+    "ap-south-1":     {"emr_serverless_vcpu_hour": 0.055255, "emr_serverless_memory_gb_hour": 0.006067},
+    "us-gov-west-1":  {"emr_serverless_vcpu_hour": 0.063149, "emr_serverless_memory_gb_hour": 0.006934}
   },
   "s3": {
-    "us-east-1": {"standard_per_gb_month_first_50tb": 0.023},
-    "us-west-2": {"standard_per_gb_month_first_50tb": 0.023}
+    "us-east-1":      {"standard_per_gb_month_first_50tb": 0.023, "put_per_1000": 0.005},
+    "us-west-2":      {"standard_per_gb_month_first_50tb": 0.023, "put_per_1000": 0.005},
+    "eu-west-1":      {"standard_per_gb_month_first_50tb": 0.023, "put_per_1000": 0.005},
+    "ap-southeast-1": {"standard_per_gb_month_first_50tb": 0.025, "put_per_1000": 0.005},
+    "ap-south-1":     {"standard_per_gb_month_first_50tb": 0.024, "put_per_1000": 0.005},
+    "us-gov-west-1":  {"standard_per_gb_month_first_50tb": 0.039, "put_per_1000": 0.005}
+  },
+  "ri_discounts": {
+    "graviton_1yr_no_upfront":  0.31,
+    "graviton_1yr_all_upfront": 0.35,
+    "graviton_3yr_no_upfront":  0.48,
+    "graviton_3yr_all_upfront": 0.52,
+    "t3_1yr_no_upfront":        0.18,
+    "t3_3yr_no_upfront":        0.29
+  },
+  "govcloud_uplift_vs_us_east_1": {
+    "t3":   0.205,
+    "m6g":  0.258,
+    "m7g":  0.264,
+    "r6g":  0.204,
+    "r7g":  0.197,
+    "c6g":  0.195,
+    "ebs_gp3":      0.20,
+    "aoss_ocu":     0.258
   }
 }

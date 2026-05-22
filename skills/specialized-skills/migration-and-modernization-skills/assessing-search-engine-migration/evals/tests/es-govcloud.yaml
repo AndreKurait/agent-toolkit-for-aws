@@ -4,7 +4,7 @@ vars:
   scenario: 'Elasticsearch 7.17, 2 TB data, 500 QPS, must run in AWS GovCloud (US-West) under FedRAMP High.'
 
 assert:
-  - type: contains
-    value: 'service-'
+  - type: icontains
+    value: 'OpenSearch Service'
   - type: icontains
     value: 'govcloud'

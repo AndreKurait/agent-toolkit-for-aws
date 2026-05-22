@@ -34,55 +34,72 @@ the numbers come from and how to keep them current.
 
 ## What the JSON contains
 
+The shipped JSON covers six regions:
+**us-east-1**, **us-west-2**, **eu-west-1**, **ap-southeast-1**,
+**ap-south-1**, **us-gov-west-1**.
+
+For each region, the `service` block includes:
+
+- `t3.small.search` — burstable, 2 vCPU / 2 GiB.
+- `m6g.{large,xlarge,2xlarge,4xlarge}.search` — Graviton2 general-purpose.
+- `m7g.{xlarge,2xlarge,4xlarge}.search` — Graviton3 general-purpose (~12% faster than m6g).
+- `r6g.{large,xlarge,2xlarge,4xlarge}.search` — Graviton2 memory-optimized (k-NN, aggregations).
+- `r7g.{xlarge,2xlarge,4xlarge}.search` — Graviton3 memory-optimized.
+- `c6g.{large,xlarge}.search` — Graviton2 compute-optimized (smaller-mem indexing).
+- `or1.{medium,large,xlarge,2xlarge,4xlarge,8xlarge}.search` — S3-backed primary
+  storage; ~2× r6g indexing throughput, replica=1 sufficient. **Not in
+  us-gov-west-1 or ap-south-1.**
+- `ultrawarm1.{medium,large}.search` — UltraWarm node hour (cache only;
+  warm GB priced separately).
+- `ebs_gp3_*` — GP3 attached-storage, IOPS, throughput. NOTE: AOS-managed
+  GP3 is bundled at ~52% above raw EC2 EBS GP3 — the JSON already reflects
+  the AOS-managed rate.
+- `ultrawarm_managed_storage_per_gb_month` — UW S3-backed warm tier.
+- `cold_managed_storage_per_gb_month` — cold tier.
+
+Top-level blocks `serverless`, `data_transfer`, `osi`, `emr`, `s3` mirror
+the same regional keys.
+
 ```jsonc
 {
-  "as_of": "2025-01-15",
+  "as_of": "2026-05-22",
   "currency": "USD",
   "service": {
     "us-east-1": {
-      "m6g.large.search":   { "usd_per_hour": 0.167, "vcpu": 2,  "memory_gib": 8 },
-      "m6g.xlarge.search":  { "usd_per_hour": 0.334, "vcpu": 4,  "memory_gib": 16 },
-      "m6g.2xlarge.search": { "usd_per_hour": 0.668, "vcpu": 8,  "memory_gib": 32 },
-      "m6g.4xlarge.search": { "usd_per_hour": 1.336, "vcpu": 16, "memory_gib": 64 },
-      "r6g.large.search":   { "usd_per_hour": 0.211, "vcpu": 2,  "memory_gib": 16 },
-      "r6g.xlarge.search":  { "usd_per_hour": 0.422, "vcpu": 4,  "memory_gib": 32 },
-      "r6g.2xlarge.search": { "usd_per_hour": 0.844, "vcpu": 8,  "memory_gib": 64 },
-      "r6g.4xlarge.search": { "usd_per_hour": 1.688, "vcpu": 16, "memory_gib": 128 },
-      "t3.small.search":    { "usd_per_hour": 0.036, "vcpu": 2,  "memory_gib": 2 },
-      "ultrawarm1.medium.search": { "usd_per_hour": 0.238, "vcpu": 2, "memory_gib": 16 },
+      "or1.2xlarge.search": { "usd_per_hour": 1.124, "vcpu": 8, "memory_gib": 64 },
+      "r7g.xlarge.search":  { "usd_per_hour": 0.472, "vcpu": 4, "memory_gib": 32 },
+      "ultrawarm1.large.search": { "usd_per_hour": 1.910, "vcpu": 8, "memory_gib": 64 },
       "ebs_gp3_per_gb_month": 0.122,
-      "ebs_gp3_per_iops_month": 0.008,
-      "ebs_gp3_per_throughput_mbps_month": 0.097
+      "ultrawarm_managed_storage_per_gb_month": 0.024,
+      "cold_managed_storage_per_gb_month": 0.0125,
+      "...": "more instances and per-GB prices"
     }
   },
   "serverless": {
     "us-east-1": {
       "ocu_per_hour": 0.24,
-      "managed_storage_per_gb_month": 0.024
+      "managed_storage_per_gb_month": 0.024,
+      "minimum_ocu_redundant": 4,
+      "minimum_ocu_non_redundant": 2
     }
   },
-  "data_transfer": {
-    "us-east-1": {
-      "cross_az_per_gb": 0.01,
-      "internet_egress_first_10tb_per_gb": 0.09
-    }
+  "ri_discounts": {
+    "graviton_1yr_no_upfront":  0.31,
+    "graviton_3yr_no_upfront":  0.48,
+    "graviton_3yr_all_upfront": 0.52
   },
-  "emr": {
-    "us-east-1": {
-      "emr_serverless_vcpu_hour": 0.052624,
-      "emr_serverless_memory_gb_hour": 0.0057785
-    }
-  },
-  "s3": {
-    "us-east-1": {
-      "standard_per_gb_month_first_50tb": 0.023
-    }
+  "govcloud_uplift_vs_us_east_1": {
+    "m6g":  0.258,
+    "r6g":  0.204,
+    "aoss_ocu": 0.258
   }
 }
 ```
 
-Adjust per region: pricing varies, especially for GovCloud and APAC regions. The estimator falls
-back to `us-east-1` with a warning if the requested region is missing — never silently substitute.
+The estimator falls back to `us-east-1` with a warning if the requested
+region is missing — never silently substitute. For deeper TCO modeling
+(hidden line items, RI discount math, GovCloud uplift table), see
+[`real-world-tco.md`](real-world-tco.md).
 
 ## Disclaimer in every report
 

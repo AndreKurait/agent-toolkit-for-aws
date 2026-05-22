@@ -170,7 +170,7 @@ to OpenSearch via the OpenSearch Spark connector or the OpenSearch SDK.
 
 ```text
 source_engine?
-├─ solr   → Path D (direct from source via Spark/EMR)
+├─ solr   → Path D (direct-from-source via Spark/EMR)
 │             unless data is small + simple → consider exporting to NDJSON and using Path C (OSI from S3)
 └─ elasticsearch | opensearch
    ├─ continuous replication required?
