@@ -1,91 +1,54 @@
-# OR1, UltraWarm, and Cold Storage — AOS Tiers Deep Dive
+# OR1, UltraWarm, Cold — Tiering Decisions
 
-## OR1 ("OpenSearch-Optimized") instance family
+> **Live data first.** Instance specs, regional availability, and tiering
+> mechanics are maintained in AWS docs and read live via MCP — do not
+> embed snapshots:
+>
+> ```jsonc
+> // OR1/OR2/OM2/OI2 architecture, limitations, tuning
+> { "tool": "aws___read_documentation",
+>   "args": { "url": "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/or1.html",
+>             "max_length": 8000 } }
+>
+> // UltraWarm spec + supported instance types
+> { "tool": "aws___read_documentation",
+>   "args": { "url": "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ultrawarm.html",
+>             "max_length": 6000 } }
+>
+> // Cold storage spec + ISM transitions
+> { "tool": "aws___read_documentation",
+>   "args": { "url": "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cold-storage.html",
+>             "max_length": 4000 } }
+>
+> // OR1 regional availability (structured)
+> { "tool": "aws___get_regional_availability",
+>   "args": { "resource_type": "product",
+>             "regions": ["us-east-1", "us-gov-west-1", "us-gov-east-1"],
+>             "filters": ["Amazon OpenSearch Service"] } }
+> ```
 
-GA at re:Invent 2023. Architecture: **each shard is durably persisted to S3
-as primary storage; local NVMe is a hot cache** for query/index. Result:
+This file augments the live docs with **the decision logic** the docs
+don't pre-make for you.
 
-- **One replica is enough** for durability (the classic 2-replica r-family
-  pattern is unnecessary).
-- Indexing throughput ~**2× r6g** at equivalent shape.
-- ~30% lower compute cost per indexed-doc; ~**40% TCO** once the
-  eliminated replica is counted.
-- Hourly is ~25% above r6g, but each OR1 carries the durability r6g requires
-  2× of.
+## When OR1 wins over r-family
 
-### When OR1 wins
-
-- **Indexing-heavy logs/observability** (>50 GB/day/node).
+- **Indexing-heavy logs/observability** — >50 GB/day/node steady-state.
 - **Spiky write workloads** — S3-backed segments make scale-out elastic.
-- **Multi-PB log tiers** — replica elimination compounds.
+- **Multi-PB log tiers** — replica elimination compounds (OR1 needs 1
+  replica for durability vs r-family's typical 2).
+- **Rapid recovery requirements** — automatic data recovery from S3 on
+  node failure beats EBS-snapshot restore.
 
-### When r-family still wins
+## When r-family still wins over OR1
 
-- **Latency-sensitive search** with small indices fitting in r6g.2xlarge RAM.
-- **Heavy aggregations** on hot indices (OR1 cache miss = S3 round-trip).
-- **Vector / k-NN workloads** — k-NN graphs are RAM-bound; favor r-family.
-- **Steady-state low ingest, high-fanout query** — r-family cheaper.
+- **Latency-sensitive search** with small indices fitting in r6g.2xlarge
+  RAM. Cache-miss → S3 round-trip on OR1.
+- **Heavy aggregations on hot indices** — same cache-miss penalty.
+- **Vector / k-NN workloads** — k-NN graphs are RAM-bound; favor r6g/r7g.
+- **Steady-state low ingest, high-fanout query** — r-family cheaper per
+  query.
 
-### Regional availability
-
-OR1 GA in 15 commercial regions. **Not yet:** us-gov-west-1, us-gov-east-1,
-China regions, ap-southeast-3, af-south-1, me-south-1.
-
-## UltraWarm
-
-UW nodes use **S3 + node-local cache**, not attached storage. The number
-that matters for capacity planning is **max addressable warm = 5× cache**.
-
-| UW instance | Cache | Max addressable warm |
-|---|---|---|
-| ultrawarm1.medium.search | – | 1.5 TiB |
-| ultrawarm1.large.search  | – | 20 TiB |
-| oi2.large                | 375 GB | 1,875 GB |
-| oi2.xlarge               | 750 GB | 3,750 GB |
-| oi2.2xlarge              | 1,500 GB | 7,500 GB |
-| oi2.4xlarge              | 3,000 GB | 15,000 GB |
-| oi2.8xlarge              | 6,000 GB | 30,000 GB |
-
-Warm = read-only unless returned to hot.
-
-```
-POST _ultrawarm/migration/<idx>/_warm
-GET  _ultrawarm/migration/_status
-```
-
-Pre-2.x k-NN indexes can NOT migrate to UW or Cold.
-
-Hot+warm node combined cap = data-nodes-per-AZ row (1-AZ 334 / 2-AZ 668 /
-3-AZ 1,002); warm-only sub-cap 250 / 500 / 750.
-
-[UltraWarm](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ultrawarm.html) ·
-[Limits](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/limits.html)
-
-## Cold storage
-
-[Cold](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cold-storage.html)
-
-**Cold is NOT directly queryable.** "You selectively attach it to existing
-UltraWarm nodes" — Cold→Warm migration is required before any query reaches
-the data. Up to 100 migrations queueable; monitor
-`WarmToColdMigrationQueueSize`.
-
-No transfer charges between warm/cold; one copy charged during migration.
-
-## Cost ratios (us-east-1, indicative)
-
-| Tier | $/GB-mo | Notes |
-|---|---|---|
-| Hot AOS-managed gp3 | 0.122 | Bundled volume + IOPS baseline + mgmt overhead |
-| Hot raw EBS gp3 (ref) | 0.080 | NOT what you pay on AOS |
-| UltraWarm S3-backed | ~0.024 | Plus the UW instance hour |
-| Cold S3-backed | ~0.0125 | Roughly S3-Standard-IA |
-
-Multiplied across replicas, shard overhead, snapshot retention, and Multi-AZ
-data transfer, hot-tier costs dominate. Most teams under-utilize the warm
-and cold tiers on day-1 of a migration.
-
-## Tiering decision tree
+## Tiering decision tree (the assessor's call)
 
 ```
 Is data write-once-read-occasionally with a known retention?
@@ -95,7 +58,8 @@ Is data write-once-read-occasionally with a known retention?
 └── No — fully hot. (Often the right call for SEARCH workloads.)
 ```
 
-ISM policies automate the transitions:
+ISM policy template (apply on AOS managed; ISM is **not available on AOSS**
+— TIME_SERIES collections auto-tier without operator control):
 
 ```json
 {
@@ -110,5 +74,23 @@ ISM policies automate the transitions:
 }
 ```
 
-ISM is **NOT available on AOSS** — TIME_SERIES auto-tiers but you don't
-control it.
+## Cold-storage operational gotchas (not in the canonical page)
+
+- **Cold is NOT directly queryable.** You selectively attach it to
+  existing UltraWarm nodes; the migration is a queue (max 100 in flight).
+  Monitor `WarmToColdMigrationQueueSize` before assuming queries can hit
+  cold data on demand.
+- Pre-2.x k-NN indexes **cannot** migrate to UW or Cold — flag during
+  source profiling if the user's k-NN data predates 2.x.
+- Hot+warm combined cap = data-nodes-per-AZ row (1-AZ 334 / 2-AZ 668 /
+  3-AZ 1,002); warm-only sub-cap 250 / 500 / 750. Use these when sizing.
+- One copy is charged during cold-migration transit; no transfer between
+  warm and cold steady-state.
+
+## Operator wisdom on day-1 tiering
+
+Most teams under-utilize warm and cold tiers on day-1 of a migration —
+they over-provision hot to "feel safe" and pay for it. The aggressive
+default is: anything older than 7 days that hasn't been queried in 24
+hours belongs in UltraWarm. Set ISM accordingly, then loosen if SLO
+breaches show up in `IndexLatency` on warm reads.

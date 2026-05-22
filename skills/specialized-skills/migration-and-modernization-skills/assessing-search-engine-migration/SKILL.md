@@ -38,7 +38,7 @@ are loaded **on demand** by phase. Do not read everything upfront.
 
 | When | Load |
 |---|---|
-| Start | This file |
+| Start | This file + `references/knowledge-retrieval.md` (fetch-vs-embed map + live MCP recipes) |
 | Phase 1-2 | `references/source-profile.md` |
 | Phase 3 (target choice) | `references/target-decision-matrix.md` + `references/aoss-deep-dive.md` (if AOSS candidate) + `references/vector-search.md` (if vectors involved) |
 | Phase 4 (migration mechanism) | `references/migration-paths.md` + `references/migration-assistant.md` |
@@ -46,6 +46,29 @@ are loaded **on demand** by phase. Do not read everything upfront.
 | Phase 6 (pricing) | `references/pricing-data.md` + `references/real-world-tco.md` |
 | Phase 7 (risks) | `references/nuggets.md` + `references/plugin-compatibility-matrix.md` |
 | Throughout | `references/aws-knowledge-integration.md` for live citations |
+
+## Fetch live, don't trust stale embeddings
+
+This skill embeds decision logic, sizing math, and structural prose. It
+does **not** embed factual lookup tables that AWS owns and updates on
+its own cadence. Always retrieve the following from the AWS Knowledge
+MCP server (`https://knowledge-mcp.global.api.aws`) instead of trusting
+the snapshot files in `references/`:
+
+- Plugin compatibility matrix (use `aws___read_documentation` on the
+  supported-plugins page)
+- FedRAMP / regional availability claims (use
+  `aws___get_regional_availability` with `resource_type=product`)
+- Current pricing numbers (use `aws___read_documentation` on the
+  pricing page; reconcile against the embedded snapshot)
+- Migration Assistant supported sources (search + read)
+- OR1 / OR2 / OI2 / UltraWarm specs and limitations (read live)
+- Vector / k-NN current limits
+
+Full per-area recipes (verified against the live endpoint) are in
+`references/knowledge-retrieval.md`. The probe at
+`scripts/probe_aws_knowledge_mcp.py` confirms all six MCP tools are
+reachable; run it before an assessment if you suspect schema drift.
 
 ## Philosophy
 

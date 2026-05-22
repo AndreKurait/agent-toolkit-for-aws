@@ -1,75 +1,78 @@
-# Plugin Compatibility Matrix
+# Plugin Compatibility — Decision Rules
 
-Y = available · P = partial · N = not available
+> **Live data first.** The full plugin-by-version table and AOSS allowlist
+> are maintained in AWS docs and read live via MCP — do not embed snapshots:
+>
+> ```jsonc
+> // Full AOS plugin × OpenSearch version table
+> { "tool": "aws___read_documentation",
+>   "args": { "url": "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/supported-plugins.html",
+>             "max_length": 6000 } }
+>
+> // AOSS supported operations + plugin subset
+> { "tool": "aws___read_documentation",
+>   "args": { "url": "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-genref.html",
+>             "max_length": 6000 } }
+>
+> // Custom (ZIP) plugin upload story
+> { "tool": "aws___read_documentation",
+>   "args": { "url": "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/custom-plugins.html",
+>             "max_length": 4000 } }
+> ```
 
-Use this as a fast filter when the user lists their installed plugins.
+This file augments the live data with **decision rules** the docs don't
+articulate.
 
-| Plugin | AOS | AOSS | Notes |
-|---|---|---|---|
-| opensearch-knn | Y | P | AOSS: VECTORSEARCH collection only |
-| opensearch-ml (ML Commons) | Y | Y | `_plugins/_ml/*` allowlisted on AOSS |
-| opensearch-security | Y | N | AOSS uses IAM data-access policies |
-| opensearch-anomaly-detection | Y | N | |
-| opensearch-asynchronous-search | Y | N | |
-| opensearch-cross-cluster-replication | Y | N | Excluded from AOSS |
-| opensearch-index-state-management | Y | N | AOSS auto-tiers on TIME_SERIES |
-| opensearch-learning-to-rank | Y | N | |
-| opensearch-notifications | Y | N | |
-| opensearch-observability | Y | P | flow-framework yes; full UI no |
-| opensearch-performance-analyzer | Y | N | CloudWatch only on AOSS |
-| opensearch-reporting | Y | N | |
-| opensearch-sql + PPL | Y | Y | `_plugins/_sql`, `_plugins/_ppl` allowlisted |
-| opensearch-security-analytics | Y | N | |
-| opensearch-alerting | Y | N | |
-| opensearch-geospatial | Y | P | features only through OpenSearch 2.1 |
-| repository-s3 | Y | N | `_snapshot` API blocked on AOSS |
-| ingest-attachment | Y | TBD | Not in AOSS allowlist; use OSI parse_json or external Tika |
-| analysis-icu | Y | Y | Both |
-| analysis-kuromoji (Japanese) | Y | Y | Both |
-| analysis-smartcn (Chinese) | Y | Y | Both |
-| analysis-stempel (Polish) | Y | Y | Both |
-| analysis-phonetic | Y | Y | Both |
-| analysis-nori (Korean) | Y | Y | Both |
-| analysis-ukrainian | Y | Y | Both |
-| mapper-size | Y | Y | Both |
-| mapper-murmur3 | Y | Y | Both |
-| mapper-annotated-text | Y | Y | Bonus on AOSS |
-| painless | Y | P | AOSS = inline only; no stored scripts (`/_scripts` blocked) |
-| expression / mustache | Y | Y | Both |
+## Decision rules (the assessor's job, not in the docs)
 
-## Elasticsearch X-Pack equivalents
+1. Source uses **any AOS-only plugin** (alerting, anomaly-detection, ISM,
+   security-analytics, async-search, LTR, notifications, observability UI,
+   performance-analyzer, reporting, cross-cluster-replication) →
+   **AOSS is OFF the table.** Recommend AOS managed.
 
-| ES X-Pack feature | OpenSearch replacement |
-|---|---|
-| X-Pack Security | opensearch-security (AOS) / IAM policies (AOSS) |
-| X-Pack Watcher | opensearch-alerting (Monitor JSON ≠ Watcher JSON — must rewrite) |
-| X-Pack ML | opensearch-anomaly-detection + ML Commons |
-| X-Pack Transforms | OpenSearch Transforms (1.x+); subset of ES feature set |
-| X-Pack SQL | opensearch-sql + PPL |
-| X-Pack Graph | (no direct replacement — community queries / external) |
-| X-Pack Beats | OpenTelemetry Collector / Data Prepper / OSI |
+2. Source uses **any custom Java plugin** (third-party, in-house, forked) →
+   both AOS and AOSS reject. Reimplement as ingest pipeline, OSI processor,
+   Lambda, or external service.
 
-## Decision rules
+3. Source uses **X-Pack ML, X-Pack Watcher, or X-Pack Graph** → factor
+   rewrite cost into the plan regardless of target. Watcher → Alerting
+   monitor JSON is a translation, not a port.
 
-1. Source uses **any** AOS-only plugin → AOSS is OFF the table.
-2. Source uses **custom Java plugin** → both AOS and AOSS reject; reimplement
-   as ingest pipeline, OSI processor, or Lambda.
+4. Source uses **only language analyzers + ICU + mappers + painless** →
+   green light on either target. AOSS allows inline Painless but blocks
+   stored scripts (`/_scripts`).
 
-3. Source uses **X-Pack ML / Watcher** → factor rewrite cost into the plan
-   regardless of target.
+5. Source uses **dictionary-driven analysis** (Sudachi, Hunspell, custom
+   synonyms/stopwords) → AOS managed (custom packages via Console
+   "Packages"). AOSS does not support custom packages.
 
-4. Source uses **only language analyzers + ICU + mappers** → green light on
-   either target.
+## X-Pack → OpenSearch port-cost cheat sheet
 
-## Custom packages on AOS managed (ZIP-PLUGIN)
+When the live AWS docs identify the OpenSearch equivalent, these are the
+**rewrite-cost signals** to surface in the report:
 
-AOS supports uploading ZIP packages for:
+- X-Pack Watcher → opensearch-alerting Monitor — **schema differs**, rewrite
+  is mechanical but not zero-cost. Estimate ~1 day per 10 watchers.
+- X-Pack ML → anomaly-detection + ML Commons — feature-equivalent for
+  detector use cases; supervised ML jobs require ML Commons model upload.
+- X-Pack Transforms → OpenSearch Transforms — subset of source feature set;
+  audit each transform definition.
+- X-Pack Graph → no direct replacement — flag as a re-architecture item.
+- X-Pack SQL → opensearch-sql + PPL — usually drop-in.
+- X-Pack Beats → OpenTelemetry Collector / Data Prepper / OSI — pipeline
+  migration is a separate workstream.
 
-- Sudachi dictionaries (Japanese tokenizer).
-- Hunspell language packs.
-- Custom synonyms / stopwords.
+## Plugin name disambiguation
 
-Available via Console "Packages" tab. Not available on AOSS.
+When the source cluster reports a plugin via `_cat/plugins`, normalize to
+the AWS-side name before checking compatibility:
 
-[AOS plugins](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/supported-plugins.html) ·
-[AOSS plugins](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-genref.html)
+- `analysis-icu` / `analysis-kuromoji` / `analysis-smartcn` /
+  `analysis-stempel` / `analysis-nori` / `analysis-phonetic` /
+  `analysis-ukrainian` — preinstalled on both AOS and AOSS.
+- `mapper-size`, `mapper-murmur3`, `mapper-annotated-text` — preinstalled
+  on both.
+- `repository-s3` — present on AOS for managed snapshots; **`_snapshot` API
+  is blocked on AOSS** (RFS bulk-writes instead of restoring).
+- `ingest-attachment` — AOS only; replace with OSI `parse_json` or external
+  Tika sidecar for AOSS targets.

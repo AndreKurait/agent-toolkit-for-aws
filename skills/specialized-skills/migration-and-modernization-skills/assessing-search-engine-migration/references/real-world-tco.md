@@ -1,5 +1,18 @@
 # Real-World TCO Patterns and Hidden Costs
 
+> **Live data complement.** Pull current pricing and worked examples via
+> MCP before quoting the report:
+>
+> ```jsonc
+> { "tool": "aws___read_documentation",
+>   "args": { "url": "https://aws.amazon.com/opensearch-service/pricing/",
+>             "max_length": 8000 } }
+> ```
+>
+> Everything below is **augmenting** content the live docs don't carry:
+> case studies with named customers/savings, hidden line items most TCO
+> models miss, and empirical RI / GovCloud uplift tables.
+
 ## Three reference case studies
 
 ### Yelp (re:Invent 2023, ANT332)
