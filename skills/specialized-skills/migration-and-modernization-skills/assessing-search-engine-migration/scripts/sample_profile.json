@@ -1,0 +1,31 @@
+{
+  "intake": {
+    "source_engine": "elasticsearch",
+    "source_version": "7.10",
+    "primary_goal": "Migrate from self-managed ES on EC2 to a managed AWS service to reduce ops burden."
+  },
+  "source": {
+    "total_data_size_gb": 4096,
+    "total_doc_count": 200000000,
+    "peak_indexing_rate_docs_s": 200,
+    "peak_query_rate_qps": 500,
+    "steady_query_rate_qps": 350,
+    "load_pattern": "steady",
+    "update_pattern": "mostly_appends_with_updates",
+    "retention_pattern": "indefinite",
+    "plugins_in_use": [],
+    "uses_cross_cluster_replication": false,
+    "vector_workload": false
+  },
+  "account_context": {
+    "region": "us-east-1",
+    "govcloud": false,
+    "fedramp_high": false
+  },
+  "migration": {
+    "continuous_replication": false,
+    "requires_transformations": false,
+    "strict_cutover": true,
+    "backfill_days": 7
+  }
+}

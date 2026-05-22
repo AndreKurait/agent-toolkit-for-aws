@@ -1,0 +1,71 @@
+{
+  "as_of": "2025-01-15",
+  "currency": "USD",
+  "service": {
+    "us-east-1": {
+      "m6g.large.search":         {"usd_per_hour": 0.167, "vcpu": 2,  "memory_gib": 8},
+      "m6g.xlarge.search":        {"usd_per_hour": 0.334, "vcpu": 4,  "memory_gib": 16},
+      "m6g.2xlarge.search":       {"usd_per_hour": 0.668, "vcpu": 8,  "memory_gib": 32},
+      "m6g.4xlarge.search":       {"usd_per_hour": 1.336, "vcpu": 16, "memory_gib": 64},
+      "r6g.large.search":         {"usd_per_hour": 0.211, "vcpu": 2,  "memory_gib": 16},
+      "r6g.xlarge.search":        {"usd_per_hour": 0.422, "vcpu": 4,  "memory_gib": 32},
+      "r6g.2xlarge.search":       {"usd_per_hour": 0.844, "vcpu": 8,  "memory_gib": 64},
+      "r6g.4xlarge.search":       {"usd_per_hour": 1.688, "vcpu": 16, "memory_gib": 128},
+      "c6g.large.search":         {"usd_per_hour": 0.139, "vcpu": 2,  "memory_gib": 4},
+      "c6g.xlarge.search":        {"usd_per_hour": 0.278, "vcpu": 4,  "memory_gib": 8},
+      "t3.small.search":          {"usd_per_hour": 0.036, "vcpu": 2,  "memory_gib": 2},
+      "ultrawarm1.medium.search": {"usd_per_hour": 0.238, "vcpu": 2,  "memory_gib": 16},
+      "ebs_gp3_per_gb_month":           0.122,
+      "ebs_gp3_per_iops_month":         0.008,
+      "ebs_gp3_per_throughput_mbps_month": 0.097
+    },
+    "us-west-2": {
+      "m6g.large.search":   {"usd_per_hour": 0.167, "vcpu": 2,  "memory_gib": 8},
+      "m6g.xlarge.search":  {"usd_per_hour": 0.334, "vcpu": 4,  "memory_gib": 16},
+      "m6g.2xlarge.search": {"usd_per_hour": 0.668, "vcpu": 8,  "memory_gib": 32},
+      "m6g.4xlarge.search": {"usd_per_hour": 1.336, "vcpu": 16, "memory_gib": 64},
+      "r6g.xlarge.search":  {"usd_per_hour": 0.422, "vcpu": 4,  "memory_gib": 32},
+      "t3.small.search":    {"usd_per_hour": 0.036, "vcpu": 2,  "memory_gib": 2},
+      "ebs_gp3_per_gb_month":   0.122,
+      "ebs_gp3_per_iops_month": 0.008
+    }
+  },
+  "serverless": {
+    "us-east-1": {
+      "ocu_per_hour":                 0.24,
+      "managed_storage_per_gb_month": 0.024
+    },
+    "us-west-2": {
+      "ocu_per_hour":                 0.24,
+      "managed_storage_per_gb_month": 0.024
+    }
+  },
+  "data_transfer": {
+    "us-east-1": {
+      "cross_az_per_gb": 0.01,
+      "internet_egress_first_10tb_per_gb": 0.09
+    },
+    "us-west-2": {
+      "cross_az_per_gb": 0.01,
+      "internet_egress_first_10tb_per_gb": 0.09
+    }
+  },
+  "osi": {
+    "us-east-1": {"ocu_per_hour": 0.24},
+    "us-west-2": {"ocu_per_hour": 0.24}
+  },
+  "emr": {
+    "us-east-1": {
+      "emr_serverless_vcpu_hour":    0.052624,
+      "emr_serverless_memory_gb_hour": 0.0057785
+    },
+    "us-west-2": {
+      "emr_serverless_vcpu_hour":    0.052624,
+      "emr_serverless_memory_gb_hour": 0.0057785
+    }
+  },
+  "s3": {
+    "us-east-1": {"standard_per_gb_month_first_50tb": 0.023},
+    "us-west-2": {"standard_per_gb_month_first_50tb": 0.023}
+  }
+}

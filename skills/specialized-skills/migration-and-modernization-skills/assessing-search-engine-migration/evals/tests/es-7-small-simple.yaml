@@ -1,0 +1,10 @@
+description: es-7-small-simple
+
+vars:
+  scenario: 'Self-managed Elasticsearch 7.10 on EC2, 200 GB total data, 5M docs, no plugins, 50 QPS, no transforms required, no continuous replication, 4-hour downtime allowed, us-east-1.'
+
+assert:
+  - type: contains
+    value: 'snapshot-and-restore'
+  - type: icontains
+    value: 'service'

@@ -1,0 +1,14 @@
+description: solr-large-strict
+
+vars:
+  scenario: 'Apache Solr 9.4 source, 8 TB primary data, 100M docs, 100 docs/s ingest, 200 QPS read, 1-hour cutover SLO, deployed in us-east-1. Need to migrate to Amazon OpenSearch.'
+
+assert:
+  - type: contains
+    value: 'direct-from-source'
+  - type: icontains
+    value: 'Solr'
+  - type: icontains
+    value: 'EMR'
+  - type: not-contains
+    value: 'snapshot-and-restore as primary'

@@ -1,0 +1,10 @@
+description: citations-required
+
+vars:
+  scenario: 'Elasticsearch 7.10, 1 TB, 200 QPS, us-east-1.'
+
+assert:
+  - type: icontains
+    value: 'AWS Knowledge MCP'
+  - type: icontains
+    value: 'knowledge-mcp.global.api.aws'

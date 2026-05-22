@@ -1,0 +1,8 @@
+description: es-vector-workload
+
+vars:
+  scenario: 'OpenSearch 2.13 with k-NN plugin, vector embeddings workload, 500 GB indexed vectors, 200 QPS hybrid search, no plugins beyond k-NN, us-east-1.'
+
+assert:
+  - type: contains
+    value: 'vector'

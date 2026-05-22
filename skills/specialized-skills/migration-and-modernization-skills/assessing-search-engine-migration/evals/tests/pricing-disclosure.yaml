@@ -1,0 +1,12 @@
+description: pricing-disclosure
+
+vars:
+  scenario: 'Elasticsearch 7.10, 1 TB, 200 QPS, us-east-1.'
+
+assert:
+  - type: regex
+    value: 'as of \\d{4}-\\d{2}-\\d{2}'
+  - type: icontains
+    value: 'AWS Pricing Calculator'
+  - type: icontains
+    value: 'not a quote'

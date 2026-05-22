@@ -1,0 +1,8 @@
+description: es-bursty-time-series
+
+vars:
+  scenario: 'Elasticsearch 7.17, log analytics workload, append-only, 30-day retention sliding window, 2 TB hot data, 5K docs/s ingest peak / 500 docs/s steady, very bursty queries, us-west-2.'
+
+assert:
+  - type: contains
+    value: 'time-series'

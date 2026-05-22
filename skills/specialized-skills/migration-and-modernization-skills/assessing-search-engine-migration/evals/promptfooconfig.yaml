@@ -1,0 +1,35 @@
+# Promptfoo eval config for the migration-assessment skill.
+# Run: cd evals/ && npx promptfoo eval --providers openai:gpt-4o-mini
+#
+# Override the provider with --providers if you have a preferred LLM.
+# The unit tests under ../tests/ remain the source of truth for the deterministic
+# decision logic; this file checks the agent-facing prompt does the right thing.
+
+description: Migration assessment skill — end-to-end behavior
+
+prompts:
+  - file://prompts/migration-assessor.txt
+
+providers:
+  - openai:gpt-4o-mini
+
+defaultTest:
+  options:
+    cache: true
+  assert:
+    - type: contains
+      value: "Recommended target"
+    - type: contains
+      value: "Recommended migration path"
+    - type: contains
+      value: "Pricing disclaimer"
+
+tests:
+  - file://tests/solr-large-strict.yaml
+  - file://tests/es-7-small-simple.yaml
+  - file://tests/es-bursty-time-series.yaml
+  - file://tests/es-vector-workload.yaml
+  - file://tests/es-with-ltr-plugin.yaml
+  - file://tests/es-govcloud.yaml
+  - file://tests/pricing-disclosure.yaml
+  - file://tests/citations-required.yaml

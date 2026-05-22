@@ -1,0 +1,12 @@
+description: es-with-ltr-plugin
+
+vars:
+  scenario: 'Elasticsearch 7.17, e-commerce search, 1 TB data, 1K QPS, uses opensearch-learning-to-rank plugin, us-east-1.'
+
+assert:
+  - type: contains
+    value: 'service-'
+  - type: not-contains
+    value: 'aoss-search as primary'
+  - type: icontains
+    value: 'learning-to-rank'
